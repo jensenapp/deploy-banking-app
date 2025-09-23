@@ -35,5 +35,11 @@ public class Account {
     private Long version;
 
     public Account(Long id, String s, BigDecimal balance, Object o) {
+
+        // 補上這些賦值操作
+        this.id = id;
+        this.accountHolderName = s;
+        this.balance = balance;
+        // this.user = (User) o; // 根據您的邏輯決定如何處理
     }
 }
