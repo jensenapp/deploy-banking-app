@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,14 +45,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<ErrorDetails> handleAccountNotFoundException(AccountNotFoundException accountNotFoundException, WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), accountNotFoundException.getMessage(), webRequest.getDescription(false), "ACCOUNT_NOT_FOUND");
-        logger.warn("Handling AccountNotFoundException: {}", accountNotFoundException.getMessage(),accountNotFoundException);
+        logger.warn("Handling AccountNotFoundException: {}", accountNotFoundException.getMessage(), accountNotFoundException);
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(InsufficientAmountException.class)
     public ResponseEntity<ErrorDetails> handleInsufficentAmountException(InsufficientAmountException insufficientAmountException, WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), insufficientAmountException.getMessage(), webRequest.getDescription(false), "INSUFFICIENT_AMOUNT");
-        logger.warn("Handling InsufficientAmountException: {}", insufficientAmountException.getMessage(),insufficientAmountException);
+        logger.warn("Handling InsufficientAmountException: {}", insufficientAmountException.getMessage(), insufficientAmountException);
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
@@ -64,7 +65,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request.getDescription(false),
                 "INVALID_ACCOUNT_OPERATION");
 
-        logger.warn("handling AccountException :{}", accountException.getMessage(),accountException);
+        logger.warn("handling AccountException :{}", accountException.getMessage(), accountException);
 
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
@@ -76,8 +77,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 exception.getMessage(),
                 request.getDescription(false),
                 "INTERNAL_SERVER_ERROR");
-        logger.error("unexprted error occur:{}", exception.getMessage(),exception);
+        logger.error("unexprted error occur:{}", exception.getMessage(), exception);
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    public ResponseEntity<ErrorDetails> handleAccessDeniedException(AccessDeniedException accessDeniedException, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),
+                accessDeniedException.getMessage(),
+                webRequest.getDescription(false), "ACCESS_DENIED");
+        logger.warn("Access Denied: {}", accessDeniedException.getMessage());
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
 
 }
