@@ -69,16 +69,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         // --- 1. 設定 CSRF (跨站請求偽造) 保護 ---
-        http.csrf(csrf ->
-                csrf
-                        // 規則 1.1: 忽略特定路徑的 CSRF 保護。
-                        // 所有符合 "/api/auth/public/**" 模式的請求將不會進行 CSRF Token 驗證。
-                        // 這適用於不需要保護的公開 API。
-                        .ignoringRequestMatchers("/api/auth/public/**")
-                        // 規則 1.2: 設定 CSRF Token 的儲存庫。
-                        // CookieCsrfTokenRepository 會將 Token 存放在 Cookie 中。
-                        // withHttpOnlyFalse() 允許客戶端的 JavaScript 讀取這個 Cookie，這對於 SPA (單頁應用) 前端至關重要。
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+        http.csrf(csrf ->csrf.disable());
 
         // --- 2. 設定 HTTP 請求的授權規則 ---
         http.authorizeHttpRequests((requests) -> requests
