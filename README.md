@@ -86,56 +86,76 @@
 
 ## 安裝與執行 (Installation & Setup)
 
-### 環境需求
+這是一個基於 Spring Boot 3 開發的銀行系統後端應用程式，支援使用者註冊、登入 (JWT)、帳戶管理等功能。目前已部署於 Railway 雲端平台。
 
-  * JDK 17 或更高版本
-  * Maven 3.8 或更高版本
+## 🚀 線上展示 (Live Demo)
 
-### 執行步驟
+本專案已部署至 Railway，您可以透過 Swagger UI 直接測試 API 功能：
+
+- **API 文件 (Swagger UI):** [點擊這裡開啟](https://deploy-banking-app-production.up.railway.app/swagger-ui/index.html#/)
+
+> **注意：** 由於使用免費版雲端服務，首次請求可能需要等待 10\~30 秒喚醒伺服器。
+
+### 🔑 測試帳號 (Test Credentials)
+
+系統啟動時會自動初始化以下帳號，可直接用於登入測試 (獲取 Bearer Token)：
+
+| 角色 (Role) | 使用者名稱 (Username) | 密碼 (Password) | 備註 |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin` | `adminPass` | 擁有管理員權限 |
+| **User** | `user1` | `password1` | 一般使用者權限 |
+
 -----
 
-### 1\. 複製專案
+## 🛠️ 本地開發與安裝 (Local Installation)
 
-請使用以下命令複製專案：
+如果您希望在本地電腦運行此專案，請遵循以下步驟。
+
+### 環境需求
+
+* **JDK 17** 或更高版本
+* **Maven 3.8** 或更高版本
+* **MySQL 8.0** 資料庫伺服器
+
+### 執行步驟
+
+#### 1\. 複製專案
 
 ```bash
 git clone <your-repository-url>
-cd <project-directory>
+cd banking-app
 ```
 
-### 2\. 執行應用程式
+#### 2\. 設定 MySQL 資料庫
 
-專案預設使用 **H2 內嵌式資料庫**，因此無需額外配置。
+由於專案使用 MySQL，您需要在本地建立一個空的資料庫。
 
-啟動時會**自動建立**兩個測試帳號：
+1.  開啟您的 MySQL 客戶端 (如 Workbench 或 Command Line)。
+2.  執行以下 SQL 指令建立資料庫：
+    ```sql
+    CREATE DATABASE banking_app;
+    ```
+3.  確認專案的 `src/main/resources/application.properties` 設定是否與您的本地 MySQL 帳密匹配 (預設為 root/root)：
+    ```properties
+    # 本地端預設連線設定
+    spring.datasource.url=jdbc:mysql://localhost:3306/banking_app
+    spring.datasource.username=root
+    spring.datasource.password=root
+    ```
 
-* **管理員:** `username=admin`, `password=adminPass`
-* **一般使用者:** `username=user1`, `password=password1`
+#### 3\. 啟動應用程式
 
-執行以下 Maven 命令啟動應用程式：
+執行以下 Maven 指令來下載依賴並啟動：
 
 ```bash
 mvn spring-boot:run
 ```
 
->  應用程式啟動後，API 服務將運行於 **http://localhost:8080**。
+#### 4\. 存取 API 文件
 
-### 3\. 存取 H2 資料庫 (H2 Console)
+應用程式啟動成功後，請開啟瀏覽器訪問本地的 Swagger UI：
 
-應用程式啟動後，您可以進入 H2 Console 查看或驗證資料庫內容：
-
-1.  開啟瀏覽器，訪問網址：**http://localhost:8080/h2-console**
-2.  出現登入畫面後，請確認欄位填寫如下（這些值對應於 `application.properties` 中的設定）：
-
-| 欄位 | 數值 | 備註 |
-| :--- | :--- | :--- |
-| **Driver Class** | `org.h2.Driver` | |
-| **JDBC URL** | `jdbc:h2:mem:banking_db` | ** 注意：此欄位最重要，必須與設定檔完全一致才能連線到正確的記憶體資料庫。** |
-| **User Name** | `sa` | |
-| **Password** | `password` | |
-
-3.  點擊 **Connect**。
-4.  登入成功後，若在左側看到 `USERS`, `ACCOUNTS` 等資料表，即代表設定成功。
+* **網址:** `http://localhost:8080/swagger-ui/index.html`
 
 -----
 
